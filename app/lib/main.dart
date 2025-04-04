@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -56,11 +57,21 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final TextEditingController _textController = TextEditingController();
+  String _originalText = '';
+  String _translatedText = '';
 
   @override
   void dispose() {
     _textController.dispose();
     super.dispose();
+  }
+
+  Future<void> _translateText() async {
+    // Simulate an asynchronous translation process
+    await Future.delayed(const Duration(milliseconds: 500));
+    setState(() {
+      _translatedText = _originalText.split('').reversed.join();
+    });
   }
 
   void _incrementCounter() {
@@ -103,10 +114,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 border: OutlineInputBorder(),
                 labelText: 'Enter text',
               ),
+              onChanged: (text) {
+                setState(() {
+                  _originalText = text;
+                  _translatedText = ''; // Clear translated text when original changes
+                });
+              },
             ),
-            const SizedBox(height: 20), // Add some spacing
-            const Text('Original Text:'), // Placeholder
-            const Text('Translated Text:'), // Placeholder
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _translateText,
+              child: const Text('Translate'),
+            ),
+            const SizedBox(height: 20),
+            Text('Original Text: $_originalText'),
+            Text('Translated Text: $_translatedText'),
           ],
         ),
       ),
