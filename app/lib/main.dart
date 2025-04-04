@@ -54,6 +54,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            // !AI: make this into a ListTile. put the selected languages in the subtitle
             InputDecorator(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
