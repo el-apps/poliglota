@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:multiselect_dialog/multiselect_dialog.dart';
 
 void main() {
   runApp(const PoliglotaApp());
@@ -34,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   String _originalText = '';
   String _outputText = '';
   List<String> _selectedLanguages = ['English'];
+  final List<String> _availableLanguages = ['English', 'Español'];
 
   @override
   void dispose() {
@@ -65,24 +65,53 @@ class _HomePageState extends State<HomePage> {
                   IconButton(
                     icon: const Icon(Icons.arrow_drop_down),
                     onPressed: () async {
-                      final selectedOptions = await showDialog<List<String>>(
+                      final result = await showDialog<List<String>>(
                         context: context,
-                        builder: (context) {
-                          return MultiSelectDialog(
-                            title: const Text('Select Languages'),
-                            items: const [
-                              MultiSelectItem('English', 'English'),
-                              MultiSelectItem('Español', 'Español'),
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Select Languages (Max 2)'),
+                            content: StatefulBuilder(
+                              builder: (BuildContext context, StateSetter setState) {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: _availableLanguages.map((language) {
+                                    return CheckboxListTile(
+                                      title: Text(language),
+                                      value: _selectedLanguages.contains(language),
+                                      onChanged: (bool? value) {
+                                        if (value != null) {
+                                          if (value) {
+                                            if (_selectedLanguages.length < 2) {
+                                              setState(() {
+                                                _selectedLanguages.add(language);
+                                              });
+                                            }
+                                          } else {
+                                            setState(() {
+                                              _selectedLanguages.remove(language);
+                                            });
+                                          }
+                                        }
+                                      },
+                                    );
+                                  }).toList(),
+                                );
+                              },
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('OK'),
+                                onPressed: () {
+                                  Navigator.of(context).pop(_selectedLanguages);
+                                },
+                              ),
                             ],
-                            initialSelectedItems: _selectedLanguages,
-                            maxSelection: 2,
                           );
                         },
                       );
-
-                      if (selectedOptions != null) {
+                      if (result != null) {
                         setState(() {
-                          _selectedLanguages = selectedOptions;
+                          _selectedLanguages = result;
                         });
                       }
                     },
@@ -135,7 +164,7 @@ class _HomePageState extends State<HomePage> {
     await Future.delayed(const Duration(milliseconds: 500));
     // TODO: actually translate the text
 
-    String translatedText = _originalText.split('').reversed.join();
+    String translatedText = _originalText.split('').reversed().join();
     setState(() {
       _outputText = [translatedText, _originalText].join('\n');
     });
