@@ -30,7 +30,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TextEditingController _textController = TextEditingController();
   String _originalText = '';
-  String _translatedText = '';
+  String _outputText = '';
 
   @override
   void dispose() {
@@ -42,8 +42,10 @@ class _HomePageState extends State<HomePage> {
     // Simulate an asynchronous translation process
     await Future.delayed(const Duration(milliseconds: 500));
     // TODO: actually translate the text
+
+    String translatedText = _originalText.split('').reversed.join();
     setState(() {
-      _translatedText = _originalText.split('').reversed.join();
+      _outputText = [translatedText, _originalText].join('\n');
     });
   }
 
@@ -68,8 +70,6 @@ class _HomePageState extends State<HomePage> {
               onChanged: (text) {
                 setState(() {
                   _originalText = text;
-                  _translatedText =
-                      ''; // Clear translated text when original changes
                 });
               },
             ),
@@ -79,8 +79,8 @@ class _HomePageState extends State<HomePage> {
               child: const Text('Translate'),
             ),
             const SizedBox(height: 20),
-            Text('Original Text: $_originalText'),
-            Text('Translated Text: $_translatedText'),
+            Text(_outputText),
+            // TODO: add a button that copies the output text to the clipboard
           ],
         ),
       ),
