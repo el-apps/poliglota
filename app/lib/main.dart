@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const PoliglotaApp());
@@ -97,6 +98,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _copyOutput() async {
-    // TODO: copy the _outputText to the clipboard
+    await Clipboard.setData(ClipboardData(text: _outputText));
   }
 }
