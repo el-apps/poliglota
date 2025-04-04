@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _textController = TextEditingController();
   String _originalText = '';
   String _outputText = '';
+  String _selectedLanguage = 'English';
 
   @override
   void dispose() {
@@ -44,13 +45,36 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Poliglota'),
+        title: const Text('Poliglota'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          spacing: 16,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            DropdownButtonFormField<String>(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Language',
+              ),
+              value: _selectedLanguage,
+              items: const [
+                DropdownMenuItem(
+                  value: 'English',
+                  child: Text('English'),
+                ),
+                DropdownMenuItem(
+                  value: 'Español',
+                  child: Text('Español'),
+                ),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  _selectedLanguage = value!;
+                });
+              },
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: _textController,
               maxLines: 5,
@@ -64,8 +88,9 @@ class _HomePageState extends State<HomePage> {
                 });
               },
             ),
+            const SizedBox(height: 16),
             Row(
-              spacing: 16,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 FilledButton(
                   onPressed: _translateText,
@@ -76,9 +101,12 @@ class _HomePageState extends State<HomePage> {
                   child: const Text('Copy Output'),
                 ),
                 TextButton(
-                    onPressed: _clearText, child: const Text('Clear')),
+                  onPressed: _clearText,
+                  child: const Text('Clear'),
+                ),
               ],
             ),
+            const SizedBox(height: 16),
             Text(_outputText),
           ],
         ),
