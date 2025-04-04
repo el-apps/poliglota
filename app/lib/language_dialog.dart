@@ -26,32 +26,33 @@ class _LanguageDialogState extends State<LanguageDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Select Languages (Max 2)'),
+      title: const Text('Select Two Languages'),
       content: StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           return Column(
             mainAxisSize: MainAxisSize.min,
-            children: widget.availableLanguages.map((language) {
-              return CheckboxListTile(
-                title: Text(language),
-                value: _selectedLanguages.contains(language),
-                onChanged: (bool? value) {
-                  if (value != null) {
-                    if (value) {
-                      if (_selectedLanguages.length < 2) {
-                        setState(() {
-                          _selectedLanguages.add(language);
-                        });
+            children:
+                widget.availableLanguages.map((language) {
+                  return CheckboxListTile(
+                    title: Text(language),
+                    value: _selectedLanguages.contains(language),
+                    onChanged: (bool? value) {
+                      if (value != null) {
+                        if (value) {
+                          if (_selectedLanguages.length < 2) {
+                            setState(() {
+                              _selectedLanguages.add(language);
+                            });
+                          }
+                        } else {
+                          setState(() {
+                            _selectedLanguages.remove(language);
+                          });
+                        }
                       }
-                    } else {
-                      setState(() {
-                        _selectedLanguages.remove(language);
-                      });
-                    }
-                  }
-                },
-              );
-            }).toList(),
+                    },
+                  );
+                }).toList(),
           );
         },
       ),

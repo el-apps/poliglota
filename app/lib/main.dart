@@ -49,39 +49,33 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Poliglota'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            ListTile(
-              title: const Text('Languages'),
-              subtitle: Text(_selectedLanguages.join(', ')),
-              trailing: const Icon(Icons.arrow_drop_down),
-              onTap: () async {
-                final result = await showDialog<List<String>>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return LanguageDialog(
+      body: Column(
+        spacing: 16,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          ListTile(
+            title: const Text('Languages'),
+            subtitle: Text(_selectedLanguages.join(', ')),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () async {
+              final result = await showDialog<List<String>>(
+                context: context,
+                builder:
+                    (BuildContext context) => LanguageDialog(
                       selectedLanguages: _selectedLanguages,
                       availableLanguages: _availableLanguages,
-                    );
-                  },
-                );
-                if (result != null) {
-                  setState(() {
-                    _selectedLanguages = result;
-                  });
-                }
-              },
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(width: 1, color: Colors.grey),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-            ),
-            const SizedBox(height: 16),
-            TextField(
+                    ),
+              );
+              if (result != null) {
+                setState(() {
+                  _selectedLanguages = result;
+                });
+              }
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: TextField(
               controller: _textController,
               maxLines: 5,
               decoration: const InputDecoration(
@@ -94,9 +88,10 @@ class _HomePageState extends State<HomePage> {
                 });
               },
             ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
               children: [
                 FilledButton(
                   onPressed: _translateText,
@@ -109,10 +104,12 @@ class _HomePageState extends State<HomePage> {
                 TextButton(onPressed: _clearText, child: const Text('Clear')),
               ],
             ),
-            const SizedBox(height: 16),
-            Text(_outputText),
-          ],
-        ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(_outputText),
+          ),
+        ],
       ),
     );
   }
