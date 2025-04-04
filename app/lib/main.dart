@@ -38,6 +38,53 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text('Poliglota'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          spacing: 16,
+          children: <Widget>[
+            TextField(
+              controller: _textController,
+              maxLines: 5,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Enter text',
+              ),
+              onChanged: (text) {
+                setState(() {
+                  _originalText = text;
+                });
+              },
+            ),
+            Row(
+              spacing: 16,
+              children: [
+                FilledButton(
+                  onPressed: _translateText,
+                  child: const Text('Translate'),
+                ),
+                FilledButton.tonal(
+                  onPressed: _copyOutput,
+                  child: const Text('Copy Output'),
+                ),
+                // TODO: clear the text
+                TextButton(onPressed: () {}, child: const Text('Clear')),
+              ],
+            ),
+            Text(_outputText),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _translateText() async {
     // Simulate an asynchronous translation process
     await Future.delayed(const Duration(milliseconds: 500));
@@ -49,41 +96,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Poliglota'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              controller: _textController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Enter text',
-              ),
-              onChanged: (text) {
-                setState(() {
-                  _originalText = text;
-                });
-              },
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _translateText,
-              child: const Text('Translate'),
-            ),
-            const SizedBox(height: 20),
-            Text(_outputText),
-            // TODO: add a button that copies the output text to the clipboard
-          ],
-        ),
-      ),
-    );
+  Future<void> _copyOutput() async {
+    // TODO: copy the _outputText to the clipboard
   }
 }
