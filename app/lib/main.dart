@@ -92,6 +92,7 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
+              spacing: 8,
               children: [
                 FilledButton(
                   onPressed: _translateText,
