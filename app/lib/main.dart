@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:multiselect_dialog/multiselect_dialog.dart';
 
 void main() {
   runApp(const PoliglotaApp());
@@ -32,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _textController = TextEditingController();
   String _originalText = '';
   String _outputText = '';
-  String _selectedLanguage = 'English';
+  List<String> _selectedLanguages = ['English'];
 
   @override
   void dispose() {
@@ -52,27 +53,42 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            DropdownButtonFormField<String>(
+            InputDecorator(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Language',
+                labelText: 'Languages',
               ),
-              value: _selectedLanguage,
-              items: const [
-                DropdownMenuItem(
-                  value: 'English',
-                  child: Text('English'),
-                ),
-                DropdownMenuItem(
-                  value: 'Español',
-                  child: Text('Español'),
-                ),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _selectedLanguage = value!;
-                });
-              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(_selectedLanguages.join(', ')),
+                  IconButton(
+                    icon: const Icon(Icons.arrow_drop_down),
+                    onPressed: () async {
+                      final selectedOptions = await showDialog<List<String>>(
+                        context: context,
+                        builder: (context) {
+                          return MultiSelectDialog(
+                            title: const Text('Select Languages'),
+                            items: const [
+                              MultiSelectItem('English', 'English'),
+                              MultiSelectItem('Español', 'Español'),
+                            ],
+                            initialSelectedItems: _selectedLanguages,
+                            maxSelection: 2,
+                          );
+                        },
+                      );
+
+                      if (selectedOptions != null) {
+                        setState(() {
+                          _selectedLanguages = selectedOptions;
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
             TextField(
