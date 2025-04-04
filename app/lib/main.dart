@@ -54,37 +54,31 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            // !AI: make this into a ListTile. put the selected languages in the subtitle
-            InputDecorator(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Languages',
+            ListTile(
+              title: const Text('Languages'),
+              subtitle: Text(_selectedLanguages.join(', ')),
+              trailing: const Icon(Icons.arrow_drop_down),
+              onTap: () async {
+                final result = await showDialog<List<String>>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return LanguageDialog(
+                      selectedLanguages: _selectedLanguages,
+                      availableLanguages: _availableLanguages,
+                    );
+                  },
+                );
+                if (result != null) {
+                  setState(() {
+                    _selectedLanguages = result;
+                  });
+                }
+              },
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(width: 1, color: Colors.grey),
+                borderRadius: BorderRadius.circular(5),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(_selectedLanguages.join(', ')),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_drop_down),
-                    onPressed: () async {
-                      final result = await showDialog<List<String>>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return LanguageDialog(
-                            selectedLanguages: _selectedLanguages,
-                            availableLanguages: _availableLanguages,
-                          );
-                        },
-                      );
-                      if (result != null) {
-                        setState(() {
-                          _selectedLanguages = result;
-                        });
-                      }
-                    },
-                  ),
-                ],
-              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
             ),
             const SizedBox(height: 16),
             TextField(
