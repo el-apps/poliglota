@@ -71,30 +71,41 @@ class _HomePageState extends State<HomePage> {
                           return AlertDialog(
                             title: const Text('Select Languages (Max 2)'),
                             content: StatefulBuilder(
-                              builder: (BuildContext context, StateSetter setState) {
+                              builder: (
+                                BuildContext context,
+                                StateSetter setState,
+                              ) {
                                 return Column(
                                   mainAxisSize: MainAxisSize.min,
-                                  children: _availableLanguages.map((language) {
-                                    return CheckboxListTile(
-                                      title: Text(language),
-                                      value: _selectedLanguages.contains(language),
-                                      onChanged: (bool? value) {
-                                        if (value != null) {
-                                          if (value) {
-                                            if (_selectedLanguages.length < 2) {
-                                              setState(() {
-                                                _selectedLanguages.add(language);
-                                              });
+                                  children:
+                                      _availableLanguages.map((language) {
+                                        return CheckboxListTile(
+                                          title: Text(language),
+                                          value: _selectedLanguages.contains(
+                                            language,
+                                          ),
+                                          onChanged: (bool? value) {
+                                            if (value != null) {
+                                              if (value) {
+                                                if (_selectedLanguages.length <
+                                                    2) {
+                                                  setState(() {
+                                                    _selectedLanguages.add(
+                                                      language,
+                                                    );
+                                                  });
+                                                }
+                                              } else {
+                                                setState(() {
+                                                  _selectedLanguages.remove(
+                                                    language,
+                                                  );
+                                                });
+                                              }
                                             }
-                                          } else {
-                                            setState(() {
-                                              _selectedLanguages.remove(language);
-                                            });
-                                          }
-                                        }
-                                      },
-                                    );
-                                  }).toList(),
+                                          },
+                                        );
+                                      }).toList(),
                                 );
                               },
                             ),
@@ -145,10 +156,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: _copyOutput,
                   child: const Text('Copy Output'),
                 ),
-                TextButton(
-                  onPressed: _clearText,
-                  child: const Text('Clear'),
-                ),
+                TextButton(onPressed: _clearText, child: const Text('Clear')),
               ],
             ),
             const SizedBox(height: 16),
@@ -164,7 +172,7 @@ class _HomePageState extends State<HomePage> {
     await Future.delayed(const Duration(milliseconds: 500));
     // TODO: actually translate the text
 
-    String translatedText = _originalText.split('').reversed().join();
+    String translatedText = _originalText.split('').reversed.join();
     setState(() {
       _outputText = [translatedText, _originalText].join('\n');
     });
