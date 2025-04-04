@@ -37,6 +37,7 @@ class _HomePageState extends State<HomePage> {
   String _outputText = '';
   List<String> _selectedLanguages = ['English', 'Español'];
   final List<String> _availableLanguages = ['English', 'Español', 'اردو'];
+  bool _isTranslating = false;
 
   @override
   void dispose() {
@@ -107,23 +108,31 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          // TODO: show a loading indicator while the translation is in progress
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(_outputText),
-          ),
+          if (_isTranslating)
+            const Center(
+              child: CircularProgressIndicator(),
+            )
+          else
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Text(_outputText),
+            ),
         ],
       ),
     );
   }
 
   Future<void> _translateText() async {
+    setState(() {
+      _isTranslating = true;
+    });
     String translatedText = await fetchTranslation(
       _selectedLanguages,
       _originalText,
     );
     setState(() {
       _outputText = [translatedText, _originalText].join('\n');
+      _isTranslating = false;
     });
   }
 
