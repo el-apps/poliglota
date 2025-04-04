@@ -1,2 +1,3 @@
-# Home-Linguist
-An app for facilitating language learning in the home.
+# Poliglota
+
+A friendly assistant for learning languages.

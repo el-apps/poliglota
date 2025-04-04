@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "el.linguist"
+    namespace = "el.poliglota"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,7 +20,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "el.linguist"
+        applicationId = "el.poliglota"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
