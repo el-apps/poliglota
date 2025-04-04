@@ -107,6 +107,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
+          // TODO: show a loading indicator while the translation is in progress
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Text(_outputText),
