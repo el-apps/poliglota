@@ -1,4 +1,4 @@
-package com.example.app
+package el.linguist
 
 import io.flutter.embedding.android.FlutterActivity
 
