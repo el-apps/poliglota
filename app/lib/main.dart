@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:poliglota/language_dialog.dart';
 
 void main() {
   runApp(const PoliglotaApp());
@@ -68,55 +69,9 @@ class _HomePageState extends State<HomePage> {
                       final result = await showDialog<List<String>>(
                         context: context,
                         builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Select Languages (Max 2)'),
-                            content: StatefulBuilder(
-                              builder: (
-                                BuildContext context,
-                                StateSetter setState,
-                              ) {
-                                return Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children:
-                                      _availableLanguages.map((language) {
-                                        return CheckboxListTile(
-                                          title: Text(language),
-                                          value: _selectedLanguages.contains(
-                                            language,
-                                          ),
-                                          onChanged: (bool? value) {
-                                            if (value != null) {
-                                              if (value) {
-                                                if (_selectedLanguages.length <
-                                                    2) {
-                                                  setState(() {
-                                                    _selectedLanguages.add(
-                                                      language,
-                                                    );
-                                                  });
-                                                }
-                                              } else {
-                                                setState(() {
-                                                  _selectedLanguages.remove(
-                                                    language,
-                                                  );
-                                                });
-                                              }
-                                            }
-                                          },
-                                        );
-                                      }).toList(),
-                                );
-                              },
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text('OK'),
-                                onPressed: () {
-                                  Navigator.of(context).pop(_selectedLanguages);
-                                },
-                              ),
-                            ],
+                          return LanguageDialog(
+                            selectedLanguages: _selectedLanguages,
+                            availableLanguages: _availableLanguages,
                           );
                         },
                       );
