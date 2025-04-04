@@ -33,8 +33,8 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController _textController = TextEditingController();
   String _originalText = '';
   String _outputText = '';
-  List<String> _selectedLanguages = ['English'];
-  final List<String> _availableLanguages = ['English', 'Español'];
+  List<String> _selectedLanguages = ['English', 'Español'];
+  final List<String> _availableLanguages = ['English', 'Español', 'اردو'];
 
   @override
   void dispose() {
