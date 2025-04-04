@@ -102,16 +102,14 @@ class _HomePageState extends State<HomePage> {
                 ),
                 FilledButton.tonal(
                   onPressed: _copyOutput,
-                  child: const Text('Copy Output'),
+                  child: const Text('Copy'),
                 ),
                 TextButton(onPressed: _clearText, child: const Text('Clear')),
               ],
             ),
           ),
           if (_isTranslating)
-            const Center(
-              child: CircularProgressIndicator(),
-            )
+            const Center(child: CircularProgressIndicator())
           else
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -137,6 +135,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _copyOutput() async {
+    // TODO: allow the user to select if they want to copy the translated text
+    //       or both the translated text and the original text
     await Clipboard.setData(ClipboardData(text: _outputText));
   }
 
@@ -162,6 +162,7 @@ Future<String> fetchTranslation(
     headers: {
       'Authorization': 'Bearer $apiKey',
       'Content-Type': 'application/json; charset=utf-8',
+      'X-Title': 'Poliglota',
     },
     body: jsonEncode({
       "model": "google/gemini-2.0-flash-001",
@@ -174,7 +175,7 @@ Future<String> fetchTranslation(
         {
           "role": "system",
           "content":
-              "Please translate anything the users says, without any extra characters. Keep your translation short and informal. Keep emojis as-is. Use the latin script for any translated text.",
+              "Please translate anything the users says, without any extra characters. Don't try to answer questions, or in any other way respond to the user. STAY FOCUSED ON TRANSLATION ONLY! Keep your translation short and informal. Keep emojis as-is. Use the latin script for any translated text.",
         },
         {"role": "user", "content": originalText},
       ],
