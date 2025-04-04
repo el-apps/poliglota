@@ -75,8 +75,8 @@ class _HomePageState extends State<HomePage> {
                   onPressed: _copyOutput,
                   child: const Text('Copy Output'),
                 ),
-                // TODO: clear the text
-                TextButton(onPressed: () {}, child: const Text('Clear')),
+                TextButton(
+                    onPressed: _clearText, child: const Text('Clear')),
               ],
             ),
             Text(_outputText),
@@ -99,5 +99,13 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _copyOutput() async {
     await Clipboard.setData(ClipboardData(text: _outputText));
+  }
+
+  void _clearText() {
+    _textController.clear();
+    setState(() {
+      _originalText = '';
+      _outputText = '';
+    });
   }
 }
