@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:poliglota/language_dialog.dart';
+import 'dart:convert';
 
 void main() {
   runApp(const PoliglotaApp());
@@ -49,9 +51,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Poliglota'),
       ),
-      body: Column(
-        spacing: 16,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: ListView(
         children: <Widget>[
           ListTile(
             title: const Text('Languages'),
@@ -67,6 +67,7 @@ class _HomePageState extends State<HomePage> {
                     ),
               );
               if (result != null) {
+                _clearText();
                 setState(() {
                   _selectedLanguages = result;
                 });
@@ -74,7 +75,7 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: TextField(
               controller: _textController,
               maxLines: 5,
@@ -90,7 +91,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
               spacing: 8,
               children: [
@@ -107,7 +108,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Text(_outputText),
           ),
         ],
@@ -116,11 +117,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _translateText() async {
-    // Simulate an asynchronous translation process
-    await Future.delayed(const Duration(milliseconds: 500));
-    // TODO: actually translate the text
-
-    String translatedText = _originalText.split('').reversed.join();
+    String translatedText = await fetchTranslation(
+      _selectedLanguages,
+      _originalText,
+    );
     setState(() {
       _outputText = [translatedText, _originalText].join('\n');
     });
@@ -136,5 +136,47 @@ class _HomePageState extends State<HomePage> {
       _originalText = '';
       _outputText = '';
     });
+  }
+}
+
+Future<String> fetchTranslation(
+  List<String> languages,
+  String originalText,
+) async {
+  // TODO: allow the user to specify their own API key and URL
+  const apiKey = String.fromEnvironment("OPEN_ROUTER_API_KEY");
+  const baseUrl = 'https://openrouter.ai/api/v1';
+
+  final response = await http.post(
+    Uri.parse('$baseUrl/chat/completions'),
+    headers: {
+      'Authorization': 'Bearer $apiKey',
+      'Content-Type': 'application/json; charset=utf-8',
+    },
+    body: jsonEncode({
+      "model": "google/gemini-2.0-flash-001",
+      "messages": [
+        {
+          "role": "system",
+          "content":
+              "The user is having a bilingual conversation between ${languages[0]} and ${languages[1]}.",
+        },
+        {
+          "role": "system",
+          "content":
+              "Please translate anything the users says, without any extra characters. Keep your translation short and informal. Keep emojis as-is. Use the latin script for any translated text.",
+        },
+        {"role": "user", "content": originalText},
+      ],
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    // The utf8 decoding is VERY important, otherwise it default to latin-1 for some reason.
+    final data = jsonDecode(utf8.decode(response.bodyBytes));
+    return data['choices'][0]['message']['content'];
+  } else {
+    print('Failed to fetch completion: ${response.statusCode}');
+    return 'ERROR';
   }
 }
